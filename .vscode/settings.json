@@ -9,10 +9,10 @@
   "editor.formatOnSave": true,
   "files.exclude": {
     "**/.eslintcache": true,
-    "**/.gitignore": true,
+    "**/.gitignore": false,
     "**/.vscode": true,
-    "**/dist": true,
-    "**/node_modules": true,
+    "**/dist": false,
+    "**/node_modules": false,
     "**/yarn.lock": true,
     "**/.nyc_output": true
   },
