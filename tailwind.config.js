@@ -12,10 +12,6 @@ module.exports = {
     colors: {
       transparent: "transparent",
       white: colors.white,
-      skyScanner: "#0770E3",
-      lastMinutes: "#EC008C",
-      kayak: "#FF690F",
-      goVoyages: "#A5C73C",
       red: colors.red,
       green: colors.lime,
       gray: colors.warmGray,
