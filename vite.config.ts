@@ -5,6 +5,10 @@ import { VitePWA } from "vite-plugin-pwa";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig(({ mode }) => ({
+  server: {
+    host: "127.0.0.1",
+    port: 3001
+  },
   build: {
     brotliSize: false,
   },
@@ -42,8 +46,8 @@ export default defineConfig(({ mode }) => ({
       },
     }),
     mode === "test" &&
-      istanbul({
-        include: ["src/**/*.tsx"],
-      }),
+    istanbul({
+      include: ["src/**/*.tsx"],
+    }),
   ],
 }));
