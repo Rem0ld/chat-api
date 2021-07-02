@@ -3,6 +3,9 @@ const ENDPOINT = "http://localhost:3000";
 
 export default function () {
   const socket = io(ENDPOINT);
+  socket.on("connect", () => {
+    console.log(socket.id); // ojIckSD2jqNzOqIrAGzL
+  });
 
   function registerHandler(onMessageReceived: any) {
     socket.on("message", onMessageReceived)
@@ -37,6 +40,7 @@ export default function () {
   }
 
   return {
+    socket,
     registerHandler,
     unregisterHandler,
     register,
