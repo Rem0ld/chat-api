@@ -5,7 +5,8 @@ import Spinner from "components/IconsComponents/Spinner";
 import ctl from "helpers/ctl";
 import React, { ReactElement, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { useAuth } from "SessionProvider";
 import classes from "./styles";
 
 type Inputs = {
@@ -30,15 +31,32 @@ export default function Login(): ReactElement {
     formState: { errors },
   } = useForm<Inputs>();
   const [isLoading, setIsLoading] = useState(false);
+  const auth = useAuth();
+  const history = useHistory();
+
+  const login = (event: any) => {
+    event.preventDefault();
+
+    auth.signin({ user: "pierre", token: "alkdfj" });
+    localStorage.setItem(
+      "user",
+      JSON.stringify({ user: "pierre", token: "alkdfj" })
+    );
+    history.push("/chat");
+  };
+
+  const logout = () => {
+    auth.signout();
+  };
 
   const onSubmit: SubmitHandler<Inputs> = (data): void => {
     setIsLoading(true);
   };
 
   return (
-    <div className="w-full h-full border-gray-300">
+    <div className="w-full lg:w-3/5 h-full border-gray-300">
       <h2 className="font-bold text-xl text-center pt-6">Login</h2>
-      <form onSubmit={handleSubmit(onSubmit)} className="px-8 pt-4 pb-8">
+      <form onSubmit={login} className="px-8 pt-4 pb-8">
         <div className="mb-4">
           <label className={classes.label} htmlFor="email">
             Email

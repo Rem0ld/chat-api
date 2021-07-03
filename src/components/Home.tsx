@@ -1,15 +1,22 @@
-import React, { ReactElement, useEffect, useState } from "react";
-import client from "../api/socket";
+import React, { ReactElement, useEffect } from "react";
+import { Redirect } from "react-router-dom";
+import { useAuth } from "SessionProvider";
 import Login from "./Login/Login";
 import SignUp from "./Login/SignUp";
 
 export default function Home(): ReactElement {
-  const [socket, setSocket] = useState<any>();
-  const [response, setResponse] = useState("");
+  const auth = useAuth();
 
   useEffect(() => {
-    setSocket(client());
+    const user = JSON.parse(localStorage.getItem("user") as string);
+    if (user) {
+      auth.signin(user);
+    }
   }, []);
+
+  if (auth.user) {
+    return <Redirect to="/chat" />;
+  }
 
   return (
     <div className="mt-4">
@@ -20,8 +27,6 @@ export default function Home(): ReactElement {
       </div>
       <div className="flex flex-col-reverse lg:flex-row lg:items-start justify-center items-center md:mt-10 mt-10 md:m-auto mx-2 md:w-3/5  bg-white rounded-md shadow-md">
         <SignUp />
-        {/* <div className= "h-screen border-r-2 border-gray-300"></div> */}
-        {/* <hr className="h-full w-full border border-gray-300 transform-gpu lg:rotate-90" /> */}
         <Login />
       </div>
     </div>
