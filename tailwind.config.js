@@ -16,10 +16,10 @@ module.exports = {
       green: colors.lime,
       gray: colors.warmGray,
       primary: {
-        DEFAULT: "#84CC16",
+        DEFAULT: "#82CCDD",
       },
-      secondary: "#064E3B",
-      tertiary: "#BEF264",
+      secondary: "#3C6382",
+      tertiary: "#0A3D62",
     },
     boxShadow: {
       sm: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
