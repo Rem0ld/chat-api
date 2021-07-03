@@ -1,4 +1,4 @@
-import React, { ReactElement, useContext, useState } from "react";
+import React, { ReactElement, useContext, useEffect, useState } from "react";
 import { User } from "types";
 
 interface AppProperties {
@@ -29,17 +29,21 @@ export function useAuth() {
 export function useProvideAuth() {
   const [user, setUser] = useState(null);
 
+  useEffect(() => {
+    const storage = JSON.parse(localStorage.getItem("user") as string);
+    if (storage && storage.user) {
+      setUser(storage);
+    }
+  }, []);
+
   const signin = (newUser: any) => {
-    console.log("new useR", newUser);
     setUser(newUser);
-    return () => {};
   };
 
   const signout = () => {
-    return () => {
-      setUser(null);
-    };
+    setUser(null);
   };
+
   return {
     user,
     signin,
