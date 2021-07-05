@@ -50,22 +50,3 @@ export function useProvideAuth() {
     signout,
   };
 }
-
-// export default function SessionProvider({
-//   children,
-// }: AppProperties): ReactElement {
-//   const [user, setUser] = useState<Session | null>(null);
-
-//   const login = (user: Session) => {
-//     setUser(user);
-//   };
-
-//   const logout = () => {
-//     setUser(null);
-//   };
-//   return (
-//     <SessionContext.Provider value={{ user, login: login, logout: logout }}>
-//       {children}
-//     </SessionContext.Provider>
-//   );
-// }
