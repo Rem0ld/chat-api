@@ -45,11 +45,15 @@ export default function Chat(): ReactElement {
   };
 
   const createChatrooms = (name: string, userInfo: User) => {
-    socket.createChatrooms(name, userInfo, (err: any, chatroom: any) => {
-      if (err) console.error(err);
-      const newChatrooms = [...chatrooms, chatroom];
-      setChatrooms(newChatrooms);
-    });
+    socket.createChatrooms(
+      name,
+      { socketId: socket.socket.id, user: userInfo },
+      (err: any, chatroom: any) => {
+        if (err) console.error(err);
+        const newChatrooms = [...chatrooms, chatroom];
+        setChatrooms(newChatrooms);
+      }
+    );
   };
 
   const onEnterChatroom = (
@@ -57,11 +61,15 @@ export default function Chat(): ReactElement {
     onNoUserSelected: any,
     onEnterSuccess: CallableFunction
   ) => {
-    return socket.join(chatroomName, (err: any, chatHistory: string[]) => {
-      if (err) return console.error(err);
-      console.log("in the function onEnter", chatHistory);
-      return onEnterSuccess(chatHistory);
-    });
+    return socket.join(
+      chatroomName,
+      user,
+      (err: any, chatHistory: string[]) => {
+        if (err) return console.error(err);
+        console.log("in the function onEnter", chatHistory);
+        return onEnterSuccess(chatHistory);
+      }
+    );
   };
 
   const onLeaveChatroom = (chatroomName: string, onLeaveSuccess: any) => {

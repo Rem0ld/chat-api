@@ -28,12 +28,14 @@ export default function Chatroom({
   useEffect(() => {
     registerHandler(onMessageReceived);
 
-    onEnterChatroom(chatroom.name, user, (chat: any) => {
+    onEnterChatroom(chatroom.name, user, (err: any, chat: any) => {
       console.log("history chat", chat);
-      setHistory(chat);
+      // setHistory(chat);
     });
 
-    return unregisterHandler();
+    return () => {
+      unregisterHandler(), onLeave();
+    };
   }, []);
 
   const onMessageReceived = (entry: string) => {

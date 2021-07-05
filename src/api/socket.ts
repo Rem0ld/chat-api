@@ -1,4 +1,5 @@
 import io from "socket.io-client";
+import { User } from "types";
 const ENDPOINT = "http://localhost:3000";
 
 export default function () {
@@ -23,8 +24,8 @@ export default function () {
     socket.emit("register", socketId, cb);
   }
 
-  function join(chatroomName: string, cb: any) {
-    socket.emit("join", chatroomName, cb);
+  function join(chatroomName: string, user: User, cb: any) {
+    socket.emit("join", chatroomName, user, cb);
   }
 
   function leave(chatroomName: string, cb: any) {
