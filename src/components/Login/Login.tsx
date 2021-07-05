@@ -1,6 +1,8 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable no-console */
+import { gql, useMutation } from "@apollo/client";
+// import { LOGIN } from "api/graphql/user.schema";
 import Spinner from "components/IconsComponents/Spinner";
 import ctl from "helpers/ctl";
 import React, { ReactElement, useState } from "react";
@@ -10,7 +12,7 @@ import { useAuth } from "SessionProvider";
 import classes from "./styles";
 
 type Inputs = {
-  email: string;
+  username: string;
   password: string;
 };
 
@@ -22,6 +24,18 @@ text-sm
 text-primary 
 hover:underline
 `);
+export const LOGIN = gql`
+  mutation login($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
+      token
+      user {
+        id
+        username
+        email
+      }
+    }
+  }
+`;
 
 export default function Login(): ReactElement {
   const {
@@ -30,47 +44,45 @@ export default function Login(): ReactElement {
     setError,
     formState: { errors },
   } = useForm<Inputs>();
-  const [isLoading, setIsLoading] = useState(false);
+  // Session provider
   const auth = useAuth();
   const history = useHistory();
+  const [login] = useMutation(LOGIN);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const login = (event: any) => {
-    event.preventDefault();
-
-    auth.signin({ user: "pierre", token: "alkdfj" });
-    localStorage.setItem(
-      "user",
-      JSON.stringify({ user: "pierre", token: "alkdfj" })
-    );
-    history.push("/chat");
-  };
-
-  const logout = () => {
-    auth.signout();
-  };
-
-  const onSubmit: SubmitHandler<Inputs> = (data): void => {
+  const onSubmit: SubmitHandler<Inputs> = async (data): Promise<void> => {
     setIsLoading(true);
+    console.log("data :", data);
+    try {
+      const response = await login({ variables: data });
+      console.log("My response ", response);
+
+      localStorage.setItem("token", JSON.stringify(response.data.login.token));
+      localStorage.setItem("user", JSON.stringify(response.data.login.user));
+    } catch (error) {}
+
+    setIsLoading(false);
+    history.push("/chat");
   };
 
   return (
     <div className="w-full lg:w-3/5 h-full border-gray-300">
       <h2 className="font-bold text-xl text-center pt-6">Login</h2>
-      <form onSubmit={login} className="px-8 pt-4 pb-8">
+      <form onSubmit={handleSubmit(onSubmit)} className="px-8 pt-4 pb-8">
         <div className="mb-4">
           <label className={classes.label} htmlFor="email">
             Email
           </label>
           <input
-            id="email"
+            id="username"
             type="text"
-            placeholder="Email"
+            placeholder="Username"
             className={classes.input}
-            {...register("email", { required: "This field is required" })}
+            {...register("username", { required: "This field is required" })}
           />
-          {errors.email && (
+          {errors.username && (
             <span className="text-red-500 text-xs italic">
-              {errors.email.message}
+              {errors.username.message}
             </span>
           )}
         </div>
