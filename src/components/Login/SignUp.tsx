@@ -1,9 +1,13 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/jsx-props-no-spreading */
+import { gql, useMutation } from "@apollo/client";
 import Spinner from "components/IconsComponents/Spinner";
 import React, { ReactElement, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useHistory } from "react-router-dom";
+import { useAuth } from "SessionProvider";
+// import { SIGNUP } from "../../api/graphql/user.schema";
 import classes from "./styles";
 
 type Inputs = {
@@ -13,7 +17,23 @@ type Inputs = {
   confirmPassword: string;
 };
 
+export const SIGNUP = gql`
+  mutation ($email: String!, $username: String!, $password: String!) {
+    signup(email: $email, username: $username, password: $password) {
+      token
+      user {
+        id
+        username
+        email
+      }
+    }
+  }
+`;
+
 export default function SignUp(): ReactElement {
+  const auth = useAuth();
+  const history = useHistory();
+  const [signup] = useMutation(SIGNUP);
   const {
     register,
     handleSubmit,
@@ -51,6 +71,19 @@ export default function SignUp(): ReactElement {
   ): Promise<void> => {
     setIsLoading(true);
     if (checkPassword()) {
+      try {
+        const response = await signup({ variables: data });
+        localStorage.setItem(
+          "token",
+          JSON.stringify(response.data.signup.token)
+        );
+        localStorage.setItem("user", JSON.stringify(response.data.signup.user));
+      } catch (error) {
+        console.error("There was an error ", error);
+      }
+
+      setIsLoading(false);
+      history.push("/chat");
     }
   };
 
@@ -169,7 +202,7 @@ export default function SignUp(): ReactElement {
         </div>
         <div className="flex flex-wrap -mx-3 mb-2">
           <div className="flex items-center justify-between px-3">
-            <button className="bg-primary px-2 py-1 rounded-sm shadow-md text-white">
+            <button className="bg-primary px-2 py-1 mr-1 rounded-sm shadow-md text-white">
               Sign Up
             </button>
             {isLoading ? <Spinner /> : ""}

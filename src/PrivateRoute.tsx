@@ -10,8 +10,7 @@ export default function PrivateRoute({
   const auth = useAuth();
 
   if (!auth?.user) {
-    console.log("Not logged in");
-    return <Redirect to="/" />;
+    return <Redirect to="/home" />;
   }
 
   return <Route component={Component} path={path} />;

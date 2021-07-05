@@ -42,6 +42,8 @@ export function useProvideAuth() {
 
   const signout = () => {
     setUser(null);
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
   };
 
   return {

@@ -24,6 +24,7 @@ text-sm
 text-primary 
 hover:underline
 `);
+
 export const LOGIN = gql`
   mutation login($username: String!, $password: String!) {
     login(username: $username, password: $password) {
@@ -52,17 +53,16 @@ export default function Login(): ReactElement {
 
   const onSubmit: SubmitHandler<Inputs> = async (data): Promise<void> => {
     setIsLoading(true);
-    console.log("data :", data);
+
     try {
       const response = await login({ variables: data });
       console.log("My response ", response);
 
       localStorage.setItem("token", JSON.stringify(response.data.login.token));
       localStorage.setItem("user", JSON.stringify(response.data.login.user));
+      setIsLoading(false);
+      history.push("/chat");
     } catch (error) {}
-
-    setIsLoading(false);
-    history.push("/chat");
   };
 
   return (

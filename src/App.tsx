@@ -10,17 +10,17 @@ import { client } from "./api/context";
 
 export default function App(): ReactElement {
   return (
-    <ProvideAuth>
-      <ApolloProvider client={client}>
+    <ApolloProvider client={client}>
+      <ProvideAuth>
         <BrowserRouter>
           <Suspense fallback={<LoadingOrError />}>
             <Switch>
               <PrivateRoute path="/chat" component={Chat} />
-              <Route path="/" component={Home} />
+              <Route path="/home" component={Home} />
             </Switch>
           </Suspense>
         </BrowserRouter>
-      </ApolloProvider>
-    </ProvideAuth>
+      </ProvideAuth>
+    </ApolloProvider>
   );
 }

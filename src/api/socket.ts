@@ -3,8 +3,8 @@ const ENDPOINT = "http://localhost:3000";
 
 export default function () {
   const socket = io(ENDPOINT);
+
   socket.on("connect", () => {
-    console.log(socket.id); // ojIckSD2jqNzOqIrAGzL
   });
 
   function registerHandler(onMessageReceived: any) {
@@ -39,6 +39,10 @@ export default function () {
     socket.emit("chatrooms", null, cb)
   }
 
+  function createChatrooms(name: string, user: any, cb: any) {
+    socket.emit("create_chatrooms", name, user, cb);
+  }
+
   return {
     socket,
     registerHandler,
@@ -47,6 +51,7 @@ export default function () {
     join,
     leave,
     message,
-    getChatrooms
+    getChatrooms,
+    createChatrooms,
   }
 }
