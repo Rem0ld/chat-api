@@ -30,7 +30,7 @@ export default function Chatroom({
 
     onEnterChatroom(chatroom.name, user, (err: any, chat: any) => {
       console.log("history chat", chat);
-      // setHistory(chat);
+      setHistory(chat);
     });
 
     return () => {
@@ -47,7 +47,8 @@ export default function Chatroom({
     setHistory((previousState) => previousState.concat(entry));
   };
 
-  const handleOnSendMessage = () => {
+  const handleOnSendMessage = (event: any) => {
+    if (event.key !== "Enter") return;
     if (input.length === 0) return;
 
     console.log(input);
@@ -60,23 +61,28 @@ export default function Chatroom({
   };
 
   return (
-    <div>
-      {history &&
-        history.map((element, index) => <li key={index}>{element.message}</li>)}
-      <div className="absolute bottom-0">
+    <div className="h-screen max-h-screen relative">
+      <ul className="h-[85%] list-none overflow-y-scroll">
+        {history &&
+          history.map((element, index) => (
+            <li className="py-2 px-4 hover:bg-primary rounded-md" key={index}>
+              {element}
+            </li>
+          ))}
+      </ul>
+      <div className="relative bottom-0 h-[15%]">
         <textarea
           name="input"
           id="input"
-          cols={83}
-          rows={5}
           placeholder="Write your message"
-          className="h-28 rounded-md border-2 border-white"
+          className="h-full w-full rounded-md border-2 border-white"
           value={input}
           onChange={(event) => setInput(event.target.value)}
+          onKeyPress={handleOnSendMessage}
         ></textarea>
         <button
           onClick={handleOnSendMessage}
-          className="absolute right-0 top-0 grid place-items-center h-28 w-16 bg-primary rounded-r-md"
+          className="absolute right-0 top-0 grid place-items-center h-full w-16 bg-primary rounded-r-md"
         >
           <Icon icon={sendIcon} style={{ color: "white", fontSize: "24px" }} />
         </button>

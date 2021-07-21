@@ -70,8 +70,8 @@ export default function Login(): ReactElement {
       <h2 className="font-bold text-xl text-center pt-6">Login</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="px-8 pt-4 pb-8">
         <div className="mb-4">
-          <label className={classes.label} htmlFor="email">
-            Email
+          <label className={classes.label} htmlFor="username">
+            Username
           </label>
           <input
             id="username"

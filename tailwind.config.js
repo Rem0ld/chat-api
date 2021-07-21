@@ -18,7 +18,10 @@ module.exports = {
       primary: {
         DEFAULT: "#82CCDD",
       },
-      secondary: "#3C6382",
+      secondary: {
+        DEFAULT: "rgba(60, 99, 130)",
+        hover: "#568ab5",
+      },
       tertiary: "#0A3D62",
     },
     boxShadow: {

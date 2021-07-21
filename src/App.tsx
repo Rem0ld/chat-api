@@ -16,7 +16,7 @@ export default function App(): ReactElement {
           <Suspense fallback={<LoadingOrError />}>
             <Switch>
               <PrivateRoute path="/chat" component={Chat} />
-              <Route path="/home" component={Home} />
+              <Route path="/" component={Home} />
             </Switch>
           </Suspense>
         </BrowserRouter>

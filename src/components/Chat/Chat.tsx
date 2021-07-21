@@ -35,11 +35,18 @@ export default function Chat(): ReactElement {
         console.log(responseUser);
       }
     );
+    // Creating chatroom for test purposes
+    createChatrooms("test", user);
     getChatrooms();
   }, []);
 
   const getChatrooms = () => {
     socket.getChatrooms((err: any, chatrooms: any) => {
+      if (err) {
+        console.error("Error getting chatrooms", err);
+        return;
+      }
+      console.log("getting chatrooms", chatrooms);
       setChatrooms(chatrooms);
     });
   };
@@ -49,7 +56,10 @@ export default function Chat(): ReactElement {
       name,
       { socketId: socket.socket.id, user: userInfo },
       (err: any, chatroom: any) => {
-        if (err) console.error(err);
+        if (err) {
+          console.error("error creating chatroom ", err);
+          return;
+        }
         const newChatrooms = [...chatrooms, chatroom];
         setChatrooms(newChatrooms);
       }
@@ -58,22 +68,18 @@ export default function Chat(): ReactElement {
 
   const onEnterChatroom = (
     chatroomName: string,
-    onNoUserSelected: any,
+    user: User,
     onEnterSuccess: CallableFunction
   ) => {
-    return socket.join(
-      chatroomName,
-      user,
-      (err: any, chatHistory: string[]) => {
-        if (err) return console.error(err);
-        console.log("in the function onEnter", chatHistory);
-        return onEnterSuccess(chatHistory);
-      }
-    );
+    return socket.join(chatroomName, user, onEnterSuccess);
   };
 
-  const onLeaveChatroom = (chatroomName: string, onLeaveSuccess: any) => {
-    socket.leave(chatroomName, (err: any) => {
+  const onLeaveChatroom = (
+    chatroomName: string,
+    user: User,
+    onLeaveSuccess: any
+  ) => {
+    socket.leave(chatroomName, user, (err: any) => {
       if (err) return console.error(err);
       return onLeaveSuccess();
     });
@@ -85,7 +91,9 @@ export default function Chat(): ReactElement {
         chatroom={chatroom}
         user={user}
         onEnterChatroom={onEnterChatroom}
-        onLeave={() => onLeaveChatroom(chatroom.name, () => history.push("/"))}
+        onLeave={() =>
+          onLeaveChatroom(chatroom.name, user, () => history.push("/"))
+        }
         onSendMessage={(message: string, cb: any) =>
           socket.message(chatroom.name, message, cb)
         }
@@ -100,32 +108,24 @@ export default function Chat(): ReactElement {
       <div className="flex">
         <div className="h-screen w-1/4 bg-tertiary">
           <FormCreateChatrooms createChatrooms={createChatrooms} />
-          <div className="flex flex-col mt-2 pl-2 text-white font-semibold">
-            <h2>Channels:</h2>
+          <h2 className="mb-2 text-white font-semibold">Channels:</h2>
+          <ul className="flex flex-col h-[71%] mx-2 p-4 space-y-2 rounded-md shadow-inner list-none overflow-y-scroll">
             {chatrooms &&
               chatrooms.map((chatroom) => (
                 <Link
+                  className="w-4/5 p-2 rounded-md bg-secondary text-center hover:bg-secondary-hover"
                   key={chatroom.name}
                   to={{
                     pathname: `/chat/${chatroom.name}`,
                   }}
-                  // key={chatroom.name}
-                  // onClick={() => {
-                  //   onEnterChatroom(chatroom.name, user, (chatHistory: any) =>
-                  //     history.push({
-                  //       pathname: `/chat/${chatroom.name}`,
-                  //       state: { chatHistory },
-                  //     })
-                  //   );
-                  // }}
                 >
                   {chatroom.name}
                 </Link>
               ))}
-          </div>
+          </ul>
         </div>
-        <Switch>
-          <div className="h-screen w-2/4 px-1 bg-secondary border-r border-l border-gray-400">
+        <div className="h-screen w-2/4 px-1 bg-secondary border-r border-l border-gray-400">
+          <Switch>
             {chatrooms.map((chatroom) => (
               <Route
                 key={chatroom.name}
@@ -136,10 +136,10 @@ export default function Chat(): ReactElement {
                 }}
               />
             ))}
-          </div>
-        </Switch>
+          </Switch>
+        </div>
         <div className="h-screen w-1/4 bg-tertiary text-white font-semibold">
-          <div className="flex justify-between items-center h-auto">
+          <div className="flex justify-between items-center h-auto p-2">
             {user && user.username}
             <button
               className="py-2 px-1 text-gray-700 rounded-md shadow-md bg-primary"

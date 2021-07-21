@@ -28,8 +28,8 @@ export default function () {
     socket.emit("join", chatroomName, user, cb);
   }
 
-  function leave(chatroomName: string, cb: any) {
-    socket.emit("leave", chatroomName, cb);
+  function leave(chatroomName: string, user: User, cb: any) {
+    socket.emit("leave", chatroomName, user, cb);
   }
 
   function message(chatroomName: string, message: string, cb: any) {

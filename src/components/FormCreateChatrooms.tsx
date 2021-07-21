@@ -11,17 +11,26 @@ export default function FormCreateChatrooms({
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
+    if (input.length === 0) return;
+
     const user = JSON.parse(localStorage.getItem("user") as string);
-    createChatrooms(input, user, (err: any, chatroom: any) => {
-      if (err) console.error(err);
-      console.log(chatroom);
-    });
+    createChatrooms(input, user);
+    console.log("setting input to ''");
     setInput("");
+    console.log("input is ''");
   };
   return (
-    <form method="post" onSubmit={handleSubmit}>
-      <input type="text" onChange={(event) => handleOnChange(event)} />
-      <button type="submit" className="text-white pl-2">
+    <form className="p-2 space-y-2" method="post" onSubmit={handleSubmit}>
+      <input
+        className="rounded-md"
+        type="text"
+        value={input}
+        onChange={(event) => handleOnChange(event)}
+      />
+      <button
+        className="py-2 px-1 text-gray-700 rounded-md shadow-md bg-primary"
+        type="submit"
+      >
         Create Chatroom
       </button>
     </form>
