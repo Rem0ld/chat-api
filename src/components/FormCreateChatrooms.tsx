@@ -15,12 +15,10 @@ export default function FormCreateChatrooms({
 
     const user = JSON.parse(localStorage.getItem("user") as string);
     createChatrooms(input, user);
-    console.log("setting input to ''");
     setInput("");
-    console.log("input is ''");
   };
   return (
-    <form className="p-2 space-y-2" method="post" onSubmit={handleSubmit}>
+    <form className="space-y-2" method="post" onSubmit={handleSubmit}>
       <input
         className="rounded-md"
         type="text"

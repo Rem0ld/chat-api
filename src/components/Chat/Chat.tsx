@@ -57,7 +57,7 @@ export default function Chat(): ReactElement {
       { socketId: socket.socket.id, user: userInfo },
       (err: any, chatroom: any) => {
         if (err) {
-          console.error("error creating chatroom ", err);
+          console.error(err);
           return;
         }
         const newChatrooms = [...chatrooms, chatroom];
@@ -74,6 +74,8 @@ export default function Chat(): ReactElement {
     return socket.join(chatroomName, user, onEnterSuccess);
   };
 
+  // At the moment there is no reason to use onLeaveSuccess
+  // And it was causing memory leak
   const onLeaveChatroom = (
     chatroomName: string,
     user: User,
@@ -81,7 +83,7 @@ export default function Chat(): ReactElement {
   ) => {
     socket.leave(chatroomName, user, (err: any) => {
       if (err) return console.error(err);
-      return onLeaveSuccess();
+      // return onLeaveSuccess();
     });
   };
 
@@ -106,10 +108,10 @@ export default function Chat(): ReactElement {
   return (
     <BrowserRouter>
       <div className="flex">
-        <div className="h-screen w-1/4 bg-tertiary">
+        <div className="h-screen w-1/4 px-2 space-y-2 bg-tertiary">
           <FormCreateChatrooms createChatrooms={createChatrooms} />
           <h2 className="mb-2 text-white font-semibold">Channels:</h2>
-          <ul className="flex flex-col h-[71%] mx-2 p-4 space-y-2 rounded-md shadow-inner list-none overflow-y-scroll">
+          <ul className="flex flex-col h-[71%] p-4 space-y-2 rounded-md shadow-inner list-none overflow-y-scroll">
             {chatrooms &&
               chatrooms.map((chatroom) => (
                 <Link

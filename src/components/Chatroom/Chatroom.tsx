@@ -1,7 +1,7 @@
 import sendIcon from "@iconify/icons-akar-icons/send";
 import { Icon } from "@iconify/react";
 import React, { ReactElement, useEffect, useState } from "react";
-import { User } from "types";
+import { TEntry, User } from "types";
 
 interface AppProperties {
   registerHandler: any;
@@ -22,7 +22,7 @@ export default function Chatroom({
   onLeave,
   onSendMessage,
 }: AppProperties): ReactElement {
-  const [history, setHistory] = useState<string[]>([]);
+  const [history, setHistory] = useState<TEntry[]>([]);
   const [input, setInput] = useState<string>("");
 
   useEffect(() => {
@@ -38,20 +38,18 @@ export default function Chatroom({
     };
   }, []);
 
-  const onMessageReceived = (entry: string) => {
+  const onMessageReceived = (entry: TEntry) => {
     console.log("onMessageReceived:", entry);
     updateChatHistory(entry);
   };
 
-  const updateChatHistory = (entry: string) => {
+  const updateChatHistory = (entry: TEntry) => {
     setHistory((previousState) => previousState.concat(entry));
   };
 
   const handleOnSendMessage = (event: any) => {
     if (event.key !== "Enter") return;
     if (input.length === 0) return;
-
-    console.log(input);
 
     onSendMessage(input, (err: any) => {
       if (err) return console.error(err);
@@ -66,7 +64,7 @@ export default function Chatroom({
         {history &&
           history.map((element, index) => (
             <li className="py-2 px-4 hover:bg-primary rounded-md" key={index}>
-              {element}
+              {element.message}
             </li>
           ))}
       </ul>
