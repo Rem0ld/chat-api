@@ -31,8 +31,8 @@ export default function Chatroom({
     registerHandler(onMessageReceived);
 
     onEnterChatroom(chatroom.name, user, (err: any, data: ICallbackJoin) => {
-      console.log("history chat", data.chat);
-      console.log("user Connected", data.listUserConnected);
+      // console.log("history chat", data.chat);
+      // console.log("user Connected", data.listUserConnected);
       setListUsers(data.listUserConnected);
       setHistory(data.chat);
     });
