@@ -7,6 +7,7 @@ interface AppProperties {
   registerHandler: any;
   unregisterHandler: any;
   user: User;
+  setListUsers: (data: User[]) => void;
   chatroom: any;
   onLeave: any;
   onEnterChatroom: any;
@@ -15,6 +16,7 @@ interface AppProperties {
 
 export default function Chatroom({
   user,
+  setListUsers,
   chatroom,
   onEnterChatroom,
   registerHandler,
@@ -23,7 +25,6 @@ export default function Chatroom({
   onSendMessage,
 }: AppProperties): ReactElement {
   const [history, setHistory] = useState<TEntry[]>([]);
-  const [listUsers, setListUsers] = useState<User[]>([]);
   const [input, setInput] = useState<string>("");
 
   useEffect(() => {
