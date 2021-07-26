@@ -20,9 +20,9 @@ export default function () {
     console.log("error ", err);
   });
 
-  socket.on("event-connection", (data) => {
-    console.log(data)
-  })
+  function registerConnection(onStatusReceived: any) {
+    socket.on("event-connection", onStatusReceived)
+  }
 
   function register(socketId: string, cb: any) {
     socket.emit("register", socketId, cb);
@@ -51,6 +51,7 @@ export default function () {
   return {
     socket,
     registerHandler,
+    registerConnection,
     unregisterHandler,
     register,
     join,
