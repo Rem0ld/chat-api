@@ -8,7 +8,6 @@ const errorLink: ApolloLink | RequestHandler = onError(
   ({ graphQLErrors, networkError }) => {
     if (graphQLErrors) {
       console.log("graphQLErrors", graphQLErrors);
-      throw new Error(graphQLErrors[0].message)
     }
     if (networkError) {
       console.log("networkError", networkError);

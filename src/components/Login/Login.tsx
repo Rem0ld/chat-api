@@ -53,16 +53,27 @@ export default function Login(): ReactElement {
 
   const onSubmit: SubmitHandler<Inputs> = async (data): Promise<void> => {
     setIsLoading(true);
-
     try {
       const response = await login({ variables: data });
-      console.log("My response ", response);
 
       localStorage.setItem("token", JSON.stringify(response.data.login.token));
       localStorage.setItem("user", JSON.stringify(response.data.login.user));
       setIsLoading(false);
       history.push("/chat");
-    } catch (error) {}
+    } catch (error) {
+      setIsLoading(false);
+      if (error.message === "Invalid password") {
+        setError("password", { message: error.message }, { shouldFocus: true });
+      }
+      if (error.message.includes("No user found")) {
+        setError(
+          "username",
+          { message: "No user found with this username" },
+          { shouldFocus: true }
+        );
+      }
+      console.error("in login.ts", error.message);
+    }
   };
 
   return (
