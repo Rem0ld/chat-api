@@ -8,7 +8,6 @@ import ctl from "helpers/ctl";
 import React, { ReactElement, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link, useHistory } from "react-router-dom";
-import { useAuth } from "SessionProvider";
 import classes from "./styles";
 
 type Inputs = {
@@ -45,8 +44,6 @@ export default function Login(): ReactElement {
     setError,
     formState: { errors },
   } = useForm<Inputs>();
-  // Session provider
-  const auth = useAuth();
   const history = useHistory();
   const [login] = useMutation(LOGIN);
   const [isLoading, setIsLoading] = useState(false);
