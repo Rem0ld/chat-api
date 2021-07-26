@@ -32,19 +32,17 @@ export default function Chat(): ReactElement {
       { socketId: socket.id, user: user },
       (err: any, responseUser: any) => {
         if (err) console.error(err);
-        console.log(responseUser);
+        // console.log(responseUser);
       }
     );
-
     socket.registerConnection(onStatusReceived);
 
-    // Creating chatroom for test purposes
-    createChatrooms("test", user);
     getChatrooms();
   }, []);
 
-  const onStatusReceived = (data: any) => {
-    console.log(data);
+  const onStatusReceived = (data: User[]) => {
+    setListUsers(data);
+    // console.log(data);
   };
 
   const getChatrooms = () => {
@@ -53,24 +51,9 @@ export default function Chat(): ReactElement {
         console.error("Error getting chatrooms", err);
         return;
       }
-      console.log("getting chatrooms", chatrooms);
+      // console.log("getting chatrooms", chatrooms);
       setChatrooms(chatrooms);
     });
-  };
-
-  const createChatrooms = (name: string, userInfo: User) => {
-    socket.createChatrooms(
-      name,
-      { socketId: socket.socket.id, user: userInfo },
-      (err: any, chatroom: any) => {
-        if (err) {
-          console.error(err);
-          return;
-        }
-        const newChatrooms = [...chatrooms, chatroom];
-        setChatrooms(newChatrooms);
-      }
-    );
   };
 
   const onEnterChatroom = (
@@ -111,14 +94,15 @@ export default function Chat(): ReactElement {
     );
   };
 
+  console.log(chatrooms);
   return (
     <BrowserRouter>
       <div className="flex">
         <div className={classes.leftPanel}>
-          <FormCreateChatrooms createChatrooms={createChatrooms} />
+          <FormCreateChatrooms socket={socket} setChatrooms={setChatrooms} />
           <h2 className={classes.h2title}>Channels:</h2>
           <ul className={classes.listChatrooms}>
-            {chatrooms &&
+            {chatrooms.length > 0 &&
               chatrooms.map((chatroom) => (
                 <Link
                   className={classes.linksChatrooms}
@@ -134,25 +118,27 @@ export default function Chat(): ReactElement {
         </div>
         <div className={classes.chat}>
           <Switch>
-            {chatrooms.map((chatroom) => (
-              <Route
-                key={chatroom.name}
-                exact
-                path={`/chat/${chatroom.name}`}
-                render={() => {
-                  return renderChatroom(chatroom);
-                }}
-              />
-            ))}
+            {chatrooms.length > 0 &&
+              chatrooms.map((chatroom) => (
+                <Route
+                  key={chatroom.name}
+                  exact
+                  path={`/chat/${chatroom.name}`}
+                  render={() => {
+                    return renderChatroom(chatroom);
+                  }}
+                />
+              ))}
           </Switch>
         </div>
         <div className={classes.rightPanel}>
           <Disconnect user={user} />
           <h2 className={classes.h2title}>Users connected:</h2>
           <ul className="pl-4">
-            {listUsers.map((element) => (
-              <li key={element.id}>{element.username}</li>
-            ))}
+            {listUsers.length > 0 &&
+              listUsers.map((element) => (
+                <li key={element.id}>{element.username}</li>
+              ))}
           </ul>
         </div>
       </div>
