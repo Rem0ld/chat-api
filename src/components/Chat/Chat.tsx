@@ -1,4 +1,5 @@
 import Chatroom from "components/Chatroom/Chatroom";
+import Disconnect from "components/Disconnect";
 import FormCreateChatrooms from "components/FormCreateChatrooms";
 import React, { ReactElement, useEffect, useState } from "react";
 import {
@@ -8,7 +9,6 @@ import {
   Switch,
   useHistory,
 } from "react-router-dom";
-import { useAuth } from "SessionProvider";
 import { ChatroomType } from "types";
 import { default as client } from "../../api/socket";
 
@@ -19,7 +19,6 @@ interface User {
 }
 
 export default function Chat(): ReactElement {
-  const auth = useAuth();
   const history = useHistory();
   const [socket, setSocket] = useState<any>(client());
   const [user, setUser] = useState<User>(
@@ -138,20 +137,8 @@ export default function Chat(): ReactElement {
             ))}
           </Switch>
         </div>
-        <div className="h-screen w-1/4 bg-tertiary text-white font-semibold">
-          <div className="flex justify-between items-center h-auto p-2">
-            {user && user.username}
-            <button
-              className="py-2 px-1 text-gray-700 rounded-md shadow-md bg-primary"
-              type="button"
-              onClick={() => {
-                auth.signout();
-              }}
-            >
-              Disconnect
-            </button>
-          </div>
-        </div>
+        <Disconnect user={user} />
+        <div></div>
       </div>
     </BrowserRouter>
   );
