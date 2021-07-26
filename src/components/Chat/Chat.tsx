@@ -11,7 +11,7 @@ import {
 } from "react-router-dom";
 import { ChatroomType } from "types";
 import { default as client } from "../../api/socket";
-
+import classes from "./styles";
 interface User {
   id: string;
   username: string;
@@ -21,6 +21,7 @@ interface User {
 export default function Chat(): ReactElement {
   const history = useHistory();
   const [socket, setSocket] = useState<any>(client());
+  const [listUsers, setListUsers] = useState<User[]>([]);
   const [user, setUser] = useState<User>(
     JSON.parse(localStorage.getItem("user") as string)
   );
@@ -34,10 +35,17 @@ export default function Chat(): ReactElement {
         console.log(responseUser);
       }
     );
+
+    socket.registerConnection(onStatusReceived);
+
     // Creating chatroom for test purposes
     createChatrooms("test", user);
     getChatrooms();
   }, []);
+
+  const onStatusReceived = (data: any) => {
+    console.log(data);
+  };
 
   const getChatrooms = () => {
     socket.getChatrooms((err: any, chatrooms: any) => {
@@ -89,6 +97,7 @@ export default function Chat(): ReactElement {
       <Chatroom
         chatroom={chatroom}
         user={user}
+        setListUsers={setListUsers}
         onEnterChatroom={onEnterChatroom}
         onLeave={() =>
           onLeaveChatroom(chatroom.name, user, () => history.push("/"))
@@ -105,14 +114,14 @@ export default function Chat(): ReactElement {
   return (
     <BrowserRouter>
       <div className="flex">
-        <div className="h-screen w-1/4 px-2 space-y-2 bg-tertiary">
+        <div className={classes.leftPanel}>
           <FormCreateChatrooms createChatrooms={createChatrooms} />
-          <h2 className="mb-2 text-white font-semibold">Channels:</h2>
-          <ul className="flex flex-col h-[71%] p-4 space-y-2 rounded-md shadow-inner list-none overflow-y-scroll">
+          <h2 className={classes.h2title}>Channels:</h2>
+          <ul className={classes.listChatrooms}>
             {chatrooms &&
               chatrooms.map((chatroom) => (
                 <Link
-                  className="w-4/5 p-2 rounded-md bg-secondary text-center hover:bg-secondary-hover"
+                  className={classes.linksChatrooms}
                   key={chatroom.name}
                   to={{
                     pathname: `/chat/${chatroom.name}`,
@@ -123,7 +132,7 @@ export default function Chat(): ReactElement {
               ))}
           </ul>
         </div>
-        <div className="h-screen w-2/4 px-1 bg-secondary border-r border-l border-gray-400">
+        <div className={classes.chat}>
           <Switch>
             {chatrooms.map((chatroom) => (
               <Route
@@ -137,8 +146,15 @@ export default function Chat(): ReactElement {
             ))}
           </Switch>
         </div>
-        <Disconnect user={user} />
-        <div></div>
+        <div className={classes.rightPanel}>
+          <Disconnect user={user} />
+          <h2 className={classes.h2title}>Users connected:</h2>
+          <ul className="pl-4">
+            {listUsers.map((element) => (
+              <li key={element.id}>{element.username}</li>
+            ))}
+          </ul>
+        </div>
       </div>
     </BrowserRouter>
   );
