@@ -74,12 +74,10 @@ export default function Chat(): ReactElement {
     return socket.join(chatroomName, user, onEnterSuccess);
   };
 
-  // At the moment there is no reason to use onLeaveSuccess
-  // And it was causing memory leak
   const onLeaveChatroom = (
     chatroomName: string,
     user: User,
-    onLeaveSuccess: any
+    onLeaveSuccess: CallableFunction
   ) => {
     socket.leave(chatroomName, user, (err: any) => {
       if (err) return console.error(err);

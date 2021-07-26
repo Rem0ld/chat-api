@@ -1,5 +1,5 @@
 import io from "socket.io-client";
-import { User } from "types";
+import { ICallbackJoin, User } from "types";
 const ENDPOINT = "http://localhost:3000";
 
 export default function () {
@@ -20,11 +20,15 @@ export default function () {
     console.log("error ", err);
   });
 
+  socket.on("event-connection", (data) => {
+    console.log(data)
+  })
+
   function register(socketId: string, cb: any) {
     socket.emit("register", socketId, cb);
   }
 
-  function join(chatroomName: string, user: User, cb: any) {
+  function join(chatroomName: string, user: User, cb: ICallbackJoin) {
     socket.emit("join", chatroomName, user, cb);
   }
 

@@ -8,6 +8,7 @@ export type TEntry = {
   user: User;
   message: string;
   type: string;
+  timestamp: string;
 }
 
 export interface ChatroomType {
@@ -16,4 +17,9 @@ export interface ChatroomType {
   member: any[];
   chatHistory: string[];
   dateCreation: string;
+}
+
+export interface ICallbackJoin {
+  chat: TEntry[];
+  listUserConnected: User[];
 }

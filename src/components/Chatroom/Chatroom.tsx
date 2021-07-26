@@ -1,7 +1,7 @@
 import sendIcon from "@iconify/icons-akar-icons/send";
 import { Icon } from "@iconify/react";
 import React, { ReactElement, useEffect, useState } from "react";
-import { TEntry, User } from "types";
+import { ICallbackJoin, TEntry, User } from "types";
 
 interface AppProperties {
   registerHandler: any;
@@ -23,14 +23,17 @@ export default function Chatroom({
   onSendMessage,
 }: AppProperties): ReactElement {
   const [history, setHistory] = useState<TEntry[]>([]);
+  const [listUsers, setListUsers] = useState<User[]>([]);
   const [input, setInput] = useState<string>("");
 
   useEffect(() => {
     registerHandler(onMessageReceived);
 
-    onEnterChatroom(chatroom.name, user, (err: any, chat: any) => {
-      console.log("history chat", chat);
-      setHistory(chat);
+    onEnterChatroom(chatroom.name, user, (err: any, data: ICallbackJoin) => {
+      console.log("history chat", data.chat);
+      console.log("user Connected", data.listUserConnected);
+      setListUsers(data.listUserConnected);
+      setHistory(data.chat);
     });
 
     return () => {
@@ -39,7 +42,6 @@ export default function Chatroom({
   }, []);
 
   const onMessageReceived = (entry: TEntry) => {
-    console.log("onMessageReceived:", entry);
     updateChatHistory(entry);
   };
 
@@ -58,16 +60,35 @@ export default function Chatroom({
     });
   };
 
+  const messages =
+    history &&
+    history.map((element, index, array) =>
+      element.type !== "event" ? (
+        <li className="px-4 hover:bg-primary rounded-md" key={index}>
+          {index === 0 ||
+          (index > 0 &&
+            array[index - 1].user.username !== element.user.username) ? (
+            <div className="pt-2">
+              <span className="text-md text-white">
+                {element.user.username} -{" "}
+              </span>
+              <span className="text-xs text-gray-300">
+                {new Date(element.timestamp).toLocaleString().split(",")[0]}
+              </span>
+            </div>
+          ) : (
+            ""
+          )}
+          <p>{element.message}</p>
+        </li>
+      ) : (
+        ""
+      )
+    );
+
   return (
     <div className="h-screen max-h-screen relative">
-      <ul className="h-[85%] list-none overflow-y-scroll">
-        {history &&
-          history.map((element, index) => (
-            <li className="py-2 px-4 hover:bg-primary rounded-md" key={index}>
-              {element.message}
-            </li>
-          ))}
-      </ul>
+      <ul className="h-[85%] list-none overflow-y-scroll">{messages}</ul>
       <div className="relative bottom-0 h-[15%]">
         <textarea
           name="input"
