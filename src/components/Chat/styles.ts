@@ -15,6 +15,7 @@ overflow-y-scroll
 `)
 
 const linksChatrooms = ctl(`
+block
 w-4/5 
 p-2 
 rounded-md 
@@ -25,10 +26,8 @@ hover:bg-secondary-hover
 
 const chat = ctl(`
 h-screen 
-w-2/4 
-px-1 
+w-3/4 
 bg-secondary 
-border-r 
 border-l 
 border-gray-400
 `)
@@ -46,18 +45,20 @@ bg-tertiary
 
 const rightPanel = ctl(`
 h-screen 
-w-1/4 
-px-1 
-bg-tertiary 
+w-[15%]
+p-1 
+bg-tertiary
+border-gray-400
+border-l
 text-white 
 font-semibold
 `)
 
 const h2title = ctl(`
-mb-2 
+mb-2
+text-xl
 text-white 
 font-semibold 
-border-t-2
 `)
 
 export default {

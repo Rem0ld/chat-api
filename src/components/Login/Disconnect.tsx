@@ -5,7 +5,7 @@ import { User } from "types";
 export default function Disconnect({ user }: { user: User }): ReactElement {
   const auth = useAuth();
   return (
-    <div className="flex justify-between items-center h-auto py-2">
+    <div className="flex justify-between items-center h-auto py-2 text-white font-bold border-t-2 border-white">
       {user && user.username}
       <button
         className="py-2 px-1 text-gray-700 rounded-md shadow-md bg-primary"

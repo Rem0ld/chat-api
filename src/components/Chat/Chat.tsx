@@ -1,5 +1,4 @@
 import Chatroom from "components/Chatroom/Chatroom";
-import Disconnect from "components/Login/Disconnect";
 import React, { ReactElement, useEffect, useState } from "react";
 import { BrowserRouter, Route, Switch, useHistory } from "react-router-dom";
 import { IRoom } from "types";
@@ -15,7 +14,6 @@ interface User {
 export default function Chat(): ReactElement {
   const history = useHistory();
   const [socket, setSocket] = useState<any>(client());
-  const [listUsers, setListUsers] = useState<User[]>([]);
   const [user, setUser] = useState<User>(
     JSON.parse(localStorage.getItem("user") as string)
   );
@@ -29,13 +27,7 @@ export default function Chat(): ReactElement {
         // console.log(responseUser);
       }
     );
-    socket.registerConnection(onStatusReceived);
   }, []);
-
-  const onStatusReceived = (data: User[]) => {
-    setListUsers(data);
-    // console.log(data);
-  };
 
   const onEnterChatroom = (
     chatroomName: string,
@@ -59,9 +51,9 @@ export default function Chat(): ReactElement {
   const renderChatroom = (chatroom: any) => {
     return (
       <Chatroom
-        chatroom={chatroom}
         user={user}
-        setListUsers={setListUsers}
+        socket={socket}
+        chatroom={chatroom}
         onEnterChatroom={onEnterChatroom}
         onLeave={() =>
           onLeaveChatroom(chatroom.name, user, () => history.push("/"))
@@ -80,6 +72,7 @@ export default function Chat(): ReactElement {
       <div className="flex">
         <div className={classes.leftPanel}>
           <LeftPanel
+            user={user}
             socket={socket}
             chatrooms={chatrooms}
             setChatrooms={setChatrooms}
@@ -99,16 +92,6 @@ export default function Chat(): ReactElement {
                 />
               ))}
           </Switch>
-        </div>
-        <div className={classes.rightPanel}>
-          <Disconnect user={user} />
-          <h2 className={classes.h2title}>Users connected:</h2>
-          <ul className="pl-4">
-            {listUsers.length > 0 &&
-              listUsers.map((element) => (
-                <li key={element.id}>{element.username}</li>
-              ))}
-          </ul>
         </div>
       </div>
     </BrowserRouter>
