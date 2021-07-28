@@ -5,7 +5,7 @@ import ctl from "helpers/ctl";
 const listChatrooms = ctl(`
 flex
 flex-col 
-h-[71%] 
+h-full
 p-4 
 space-y-2 
 rounded-md 
@@ -34,6 +34,9 @@ border-gray-400
 `)
 
 const leftPanel = ctl(`
+flex
+flex-col
+max-h-screen
 h-screen 
 w-1/4 
 px-2 
