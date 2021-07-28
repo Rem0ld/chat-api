@@ -30,8 +30,6 @@ export default function Chat(): ReactElement {
       }
     );
     socket.registerConnection(onStatusReceived);
-
-    // getChatrooms();
   }, []);
 
   const onStatusReceived = (data: User[]) => {

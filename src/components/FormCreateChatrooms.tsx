@@ -1,5 +1,6 @@
 import React, { ReactElement } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useHistory } from "react-router-dom";
 import { IRoom, User } from "types";
 
 interface AppProperties {
@@ -15,6 +16,7 @@ export default function FormCreateChatrooms({
   socket,
   setChatrooms,
 }: AppProperties): ReactElement {
+  const history = useHistory();
   const {
     register,
     handleSubmit,
@@ -54,6 +56,7 @@ export default function FormCreateChatrooms({
 
         setChatrooms(chatrooms);
         reset();
+        history.push(`/chat/${name}`);
       }
     );
   };
