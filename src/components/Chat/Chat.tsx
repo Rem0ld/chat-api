@@ -75,7 +75,6 @@ export default function Chat(): ReactElement {
     );
   };
 
-  console.log(chatrooms);
   return (
     <BrowserRouter>
       <div className="flex">
