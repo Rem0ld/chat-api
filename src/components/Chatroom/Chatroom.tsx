@@ -96,9 +96,11 @@ export default function Chatroom({
       )
     );
 
-  const owner = users
-    .slice()
-    .filter((user) => user.username === chatroom.owner);
+  let owner: User | undefined;
+
+  if (users.length > 0) {
+    owner = users.slice().filter((user) => user.username === chatroom.owner)[0];
+  }
 
   return (
     <div className="h-screen max-h-screen relative flex">
@@ -129,12 +131,12 @@ export default function Chatroom({
         <h2 className={classes.h2title}>Users:</h2>
         <div className="mt-4">
           <h3 className="text-gray-200">Owner:</h3>
-          <span className="pl-4">{owner[0].username}</span>
+          <span className="pl-4">{owner?.username}</span>
           <h3 className="text-gray-300">Servants</h3>
           <ul className="pl-4">
             {users.length > 0 &&
               users.map((user) =>
-                user.username !== owner[0].username ? (
+                user.username !== owner?.username ? (
                   <li key={user.id}>{user.username}</li>
                 ) : (
                   ""
