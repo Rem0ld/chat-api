@@ -1,16 +1,10 @@
 import Chatroom from "components/Chatroom/Chatroom";
-import Disconnect from "components/Disconnect";
-import FormCreateChatrooms from "components/FormCreateChatrooms";
+import Disconnect from "components/Login/Disconnect";
 import React, { ReactElement, useEffect, useState } from "react";
-import {
-  BrowserRouter,
-  Link,
-  Route,
-  Switch,
-  useHistory,
-} from "react-router-dom";
-import { ChatroomType } from "types";
+import { BrowserRouter, Route, Switch, useHistory } from "react-router-dom";
+import { IRoom } from "types";
 import { default as client } from "../../api/socket";
+import LeftPanel from "./LeftPanel";
 import classes from "./styles";
 interface User {
   id: string;
@@ -25,7 +19,7 @@ export default function Chat(): ReactElement {
   const [user, setUser] = useState<User>(
     JSON.parse(localStorage.getItem("user") as string)
   );
-  const [chatrooms, setChatrooms] = useState<ChatroomType[]>([]);
+  const [chatrooms, setChatrooms] = useState<IRoom[]>([]);
 
   useEffect(() => {
     socket.register(
@@ -37,23 +31,12 @@ export default function Chat(): ReactElement {
     );
     socket.registerConnection(onStatusReceived);
 
-    getChatrooms();
+    // getChatrooms();
   }, []);
 
   const onStatusReceived = (data: User[]) => {
     setListUsers(data);
     // console.log(data);
-  };
-
-  const getChatrooms = () => {
-    socket.getChatrooms((err: any, chatrooms: any) => {
-      if (err) {
-        console.error("Error getting chatrooms", err);
-        return;
-      }
-      // console.log("getting chatrooms", chatrooms);
-      setChatrooms(chatrooms);
-    });
   };
 
   const onEnterChatroom = (
@@ -99,22 +82,11 @@ export default function Chat(): ReactElement {
     <BrowserRouter>
       <div className="flex">
         <div className={classes.leftPanel}>
-          <FormCreateChatrooms socket={socket} setChatrooms={setChatrooms} />
-          <h2 className={classes.h2title}>Channels:</h2>
-          <ul className={classes.listChatrooms}>
-            {chatrooms.length > 0 &&
-              chatrooms.map((chatroom) => (
-                <Link
-                  className={classes.linksChatrooms}
-                  key={chatroom.name}
-                  to={{
-                    pathname: `/chat/${chatroom.name}`,
-                  }}
-                >
-                  {chatroom.name}
-                </Link>
-              ))}
-          </ul>
+          <LeftPanel
+            socket={socket}
+            chatrooms={chatrooms}
+            setChatrooms={setChatrooms}
+          />
         </div>
         <div className={classes.chat}>
           <Switch>

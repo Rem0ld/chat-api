@@ -1,5 +1,5 @@
 import io from "socket.io-client";
-import { ICallbackJoin, User } from "types";
+import { ICallbackJoin, IRoom, User } from "types";
 const ENDPOINT = "http://localhost:3000";
 
 export default function () {
@@ -40,7 +40,7 @@ export default function () {
     socket.emit("message", { chatroomName, message }, cb);
   }
 
-  function getChatrooms(cb: any) {
+  function getChatrooms(cb: (arg0: Error | string, arg1: IRoom[]) => void): void {
     socket.emit("chatrooms", null, cb)
   }
 

@@ -11,12 +11,18 @@ export type TEntry = {
   timestamp: string;
 }
 
-export interface ChatroomType {
+export interface IChatroom {
   name: string;
   owner: string;
   member: any[];
   chatHistory: string[];
   dateCreation: string;
+}
+
+export interface IRoom {
+  name: string;
+  size: number;
+  owner: string;
 }
 
 export interface ICallbackJoin {
