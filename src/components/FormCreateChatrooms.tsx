@@ -1,6 +1,6 @@
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { User } from "types";
+import { IRoom, User } from "types";
 
 interface AppProperties {
   socket: any;
@@ -15,17 +15,13 @@ export default function FormCreateChatrooms({
   socket,
   setChatrooms,
 }: AppProperties): ReactElement {
-  const [input, setInput] = useState("");
   const {
     register,
     handleSubmit,
     setError,
     formState: { errors },
+    reset,
   } = useForm<Input>();
-
-  const handleOnChange = (event: any) => {
-    setInput(event.target.value);
-  };
 
   const onSubmit: SubmitHandler<Input> = async ({
     chatroomName,
@@ -38,14 +34,13 @@ export default function FormCreateChatrooms({
     } catch (error) {
       console.error("caught by catch", error);
     }
-    setInput("");
   };
 
   const createChatrooms = (name: string, userInfo: User) => {
     socket.createChatrooms(
       name,
       { socketId: socket.socket.id, user: userInfo },
-      (err: string, chatroom: any) => {
+      (err: undefined | string, chatrooms: IRoom[]) => {
         if (err) {
           if (err.includes("already exist!")) {
             setError(
@@ -57,11 +52,8 @@ export default function FormCreateChatrooms({
           return;
         }
 
-        // TODO: I'm receiving non-serialized data so it doesn't fit in this array
-        setChatrooms((previousState: any) => ({
-          ...previousState,
-          chatroom,
-        }));
+        setChatrooms(chatrooms);
+        reset();
       }
     );
   };
@@ -74,7 +66,9 @@ export default function FormCreateChatrooms({
       <input
         id="chatroomName"
         className="rounded-md"
+        defaultValue=""
         type="text"
+        autoComplete="off"
         {...register("chatroomName", { required: "You need to enter a name" })}
       />
       {errors.chatroomName && (
